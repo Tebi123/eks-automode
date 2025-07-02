@@ -2,6 +2,16 @@
 # ArgoCD Installation
 ################################################################################
 
+# Wait for EKS cluster to be fully ready
+resource "time_sleep" "wait_for_cluster" {
+  depends_on = [
+    module.eks,
+    null_resource.apply_nodeclass
+  ]
+
+  create_duration = "60s" # Wait 60 seconds
+}
+
 resource "helm_release" "argocd" {
   name             = "argocd"
   repository       = "https://argoproj.github.io/argo-helm"
@@ -9,6 +19,8 @@ resource "helm_release" "argocd" {
   namespace        = "argocd"
   create_namespace = true
   version          = "8.0.1"
+  timeout          = 1200
+  wait             = true
 
   values = [
     file("${path.module}/helm-valuesFiles/argocd.yaml")
@@ -16,7 +28,8 @@ resource "helm_release" "argocd" {
 
   depends_on = [
     module.eks,
-    null_resource.apply_nodeclass
+    null_resource.apply_nodeclass,
+    time_sleep.wait_for_cluster
   ]
 }
 
@@ -27,6 +40,8 @@ resource "helm_release" "metrics_server" {
   namespace        = "kube-system"
   create_namespace = false
   version          = "3.12.2"
+  timeout          = 300
+  wait             = true
 
   values = [
     <<-EOT
@@ -42,7 +57,8 @@ resource "helm_release" "metrics_server" {
 
   depends_on = [
     module.eks,
-    null_resource.apply_nodeclass
+    null_resource.apply_nodeclass,
+    time_sleep.wait_for_cluster
   ]
 }
 
@@ -53,6 +69,8 @@ resource "helm_release" "eks_s3_csi" {
   namespace        = "kube-system"
   create_namespace = false
   version          = "1.14.1"
+  timeout          = 300
+  wait             = true
 
   values = [
     <<-EOT
@@ -75,7 +93,8 @@ resource "helm_release" "eks_s3_csi" {
 
   depends_on = [
     module.eks,
-    null_resource.apply_nodeclass
+    null_resource.apply_nodeclass,
+    time_sleep.wait_for_cluster
   ]
 }
 
@@ -86,6 +105,8 @@ resource "helm_release" "externalDNS" {
   namespace        = "kube-system"
   create_namespace = false
   version          = "1.16.1"
+  timeout          = 300
+  wait             = true
 
   values = [
     <<-EOT
@@ -94,17 +115,17 @@ resource "helm_release" "externalDNS" {
       name: external-dns
       annotations:
         eks.amazonaws.com/role-arn: ${module.external_dns_irsa.iam_role_arn}
-    
+
     provider: aws
 
     sources:
      - ingress
     managedRecordTypes: ["CNAME"]
-    
+
     policy: sync
-    
+
     txtOwnerId: "${var.cluster_name}"
-    
+
     resources:
       limits:
         cpu: 100m
@@ -118,7 +139,8 @@ resource "helm_release" "externalDNS" {
   depends_on = [
     module.eks,
     null_resource.apply_nodeclass,
-    module.external_dns_irsa
+    module.external_dns_irsa,
+    time_sleep.wait_for_cluster
   ]
 }
 

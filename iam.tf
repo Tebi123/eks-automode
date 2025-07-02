@@ -25,12 +25,12 @@ resource "aws_iam_policy" "external_dns" {
   })
 }
 
-# 2. Create IAM Role and attach to a K8s Service Account 
+# 2. Create IAM Role and attach to a K8s Service Account
 module "external_dns_irsa" {
-  source                = "terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts-eks"
-  role_name             = "external-dns"
+  source                     = "terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts-eks"
+  role_name                  = "external-dns"
   attach_external_dns_policy = true
-  
+
   oidc_providers = {
     ex = {
       provider_arn               = module.eks.oidc_provider_arn
@@ -50,7 +50,7 @@ module "mountpoint_s3_csi_driver_irsa" {
   attach_mountpoint_s3_csi_policy = true
 
   mountpoint_s3_csi_bucket_arns = [var.mountpoint_s3_csi_path_arns.0]
-  mountpoint_s3_csi_path_arns   = ["${var.mountpoint_s3_csi_path_arns.0}","${var.mountpoint_s3_csi_path_arns.0}/*"]
+  mountpoint_s3_csi_path_arns   = ["${var.mountpoint_s3_csi_path_arns.0}", "${var.mountpoint_s3_csi_path_arns.0}/*"]
 
   oidc_providers = {
     main = {
@@ -62,21 +62,21 @@ module "mountpoint_s3_csi_driver_irsa" {
   force_detach_policies = true
 }
 
-module "github_oidc_provider" {
-  source  = "terraform-aws-modules/iam/aws//modules/iam-github-oidc-provider"
-}
+# module "github_oidc_provider" {
+#   source  = "terraform-aws-modules/iam/aws//modules/iam-github-oidc-provider"
+# }
 
-module "github_oidc_role" {
-  source  = "terraform-aws-modules/iam/aws//modules/iam-github-oidc-role"
+# module "github_oidc_role" {
+#   source  = "terraform-aws-modules/iam/aws//modules/iam-github-oidc-role"
 
-  name = "github-actions-oidc-role"
+#   name = "github-actions-oidc-role"
 
-  subjects = [
-    "repo:Moonlite-Media/*:*"
-  ]
+#   subjects = [
+#     "repo:Moonlite-Media/*:*"
+#   ]
 
-  policies = {
-    ECRAccess = "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryFullAccess",
-    EKSClusterPolicy = "arn:aws:iam::aws:policy/AmazonEKSClusterPolicy"
-  }
-}
+#   policies = {
+#     ECRAccess = "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryFullAccess",
+#     EKSClusterPolicy = "arn:aws:iam::aws:policy/AmazonEKSClusterPolicy"
+#   }
+# }

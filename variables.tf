@@ -1,18 +1,18 @@
 variable "cluster_name" {
   description = "Name of the VPC and EKS Cluster"
-  default     = "limanEKS-cluster-us"
+  default     = "TebiEKS-cluster-us"
   type        = string
 }
 
 variable "name" {
   description = "Name of the VPC and EKS Cluster"
-  default     = "limanEKS"
+  default     = "TebiEKS"
   type        = string
 }
 
 variable "region" {
   description = "region"
-  default     = "us-east-1"
+  default     = "eu-west-2"
   type        = string
 }
 
@@ -31,7 +31,7 @@ variable "vpc_cidr" {
 variable "mountpoint_s3_csi_path_arns" {
   description = "List of S3 path ARNs (with wildcard suffix) for Mountpoint S3 CSI"
   type        = list(string)
-  default     = [
-    "arn:aws:s3:::kuberntes-limanEKS-data"
+  default = [
+    "arn:aws:s3:::kuberntes-TebiEKS-data"
   ]
 }

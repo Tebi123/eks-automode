@@ -1,0 +1,76 @@
+# Checkov configuration file
+directory:
+  - .
+
+# Output formats
+output:
+  - cli
+  - sarif
+
+# Skip specific checks (if needed)
+skip-check:
+  # Example: Skip specific checks that don't apply to your setup
+  # - CKV_AWS_79  # Ensure Instance Metadata Service Version 1 is not enabled
+  # - CKV_AWS_8   # Ensure all data stored in the Launch configuration EBS is securely encrypted at rest
+
+# Severity levels to report
+severity:
+  - CRITICAL
+  - HIGH
+  - MEDIUM
+  - LOW
+  - INFO
+
+# Include suppressed checks in output
+include-all-checkov-policies: true
+
+# Create a baseline file for consistent results
+create-baseline: false
+
+# Exit with error code if issues are found
+hard-fail-on: 
+  - CRITICAL
+  - HIGH
+
+# Framework-specific settings
+framework:
+  - terraform
+  - kubernetes
+  - dockerfile
+  - yaml
+
+# Quiet mode (reduce output verbosity)
+quiet: false
+
+# Compact output format
+compact: false
+
+# Download external modules for scanning
+download-external-modules: true
+
+# External modules download timeout
+external-modules-download-timeout: 120
+
+# Evaluate variables when scanning
+evaluate-variables: true
+
+# Custom checks directory (if you have custom policies)
+# external-checks-dir: ./custom-policies
+
+# Baseline file for ignored findings
+# baseline: .checkov.baseline
+
+# Soft fail - don't fail the build for specific checks
+# soft-fail-on:
+#   - CKV_AWS_20
+
+# Enable experimental features
+enable-secret-scan-all-files: true
+
+# Report generation
+output-file-path: reports/
+
+# Enable/disable specific scanners
+enable:
+  - secrets
+  - iac

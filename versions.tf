@@ -1,13 +1,7 @@
 terraform {
   required_version = ">= 1.3.2"
 
-  backend "s3" {
-    bucket         = "limanEKS-terraform-statefile"
-    key            = "limanEKS/terraform.tfstate"
-    region         = "us-east-1"
-    dynamodb_table = "limanEKS-terraform-locks"            
-    encrypt        = true                          
-  }
+
 
   required_providers {
     aws = {

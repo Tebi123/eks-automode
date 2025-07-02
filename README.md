@@ -48,7 +48,7 @@ terraformEKS/
 ├── helm-valuesFiles/            # Helm chart values configurations
 │   ├── argocd.yaml              # ArgoCD configuration
 │   ├── externalDNS.yaml         # External DNS configuration
-│   ├── ingress-confirm.yaml     # Ingress controller configuration  
+│   ├── ingress-confirm.yaml     # Ingress controller configuration
 │   └── metric-server.yaml       # Metrics server configuration
 └── manifests/                   # Kubernetes manifests (manual deployment)
     ├── gpu-nodepools.yaml       # GPU-enabled node pool configuration
@@ -163,7 +163,7 @@ tofu console
 module.eks
 ```
 
-**Get all VPC module outputs** 
+**Get all VPC module outputs**
 ```bash
 module.vpc
 ```
@@ -277,7 +277,7 @@ Deploys a test pod for cluster validation and troubleshooting.
 After successful deployment, tofu provides:
 
 - 🔗 `cluster_endpoint` - EKS cluster API endpoint
-- 📛 `cluster_name` - Name of the created EKS cluster  
+- 📛 `cluster_name` - Name of the created EKS cluster
 - 🏷️ `cluster_arn` - ARN of the EKS cluster
 - 🚀 `node_group_arn` - ARN of the managed node group
 - 🌐 `vpc_id` - ID of the created VPC
@@ -306,7 +306,7 @@ kubectl get nodes
 
 - 🛡️ **RBAC**: Kubernetes RBAC configured via `auth_config.tf`
 - 🔑 **IAM**: Least-privilege IAM roles for cluster and nodes
-- 🌐 **Network**: Private subnets for worker nodes  
+- 🌐 **Network**: Private subnets for worker nodes
 - 🔐 **Encryption**: EKS secrets encryption at rest with KMS key
 
 ---
@@ -322,7 +322,7 @@ kubectl get nodes
 - ✅ Check IAM permissions for EKS service role
 - ✅ Verify subnet configuration and availability zones
 
-### 2. Add-ons fail to install  
+### 2. Add-ons fail to install
 - ✅ Ensure cluster is ready: `kubectl get nodes`
 
 ### 3. kubectl access denied

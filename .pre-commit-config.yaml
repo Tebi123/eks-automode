@@ -1,0 +1,33 @@
+repos:
+  # Terraform hooks
+  - repo: https://github.com/antonbabenko/pre-commit-terraform
+    rev: v1.88.4
+    hooks:
+      - id: terraform_fmt
+      - id: terraform_validate
+
+  # Basic file checks
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.5.0
+    hooks:
+      # - id: check-yaml
+      - id: check-json
+      - id: check-added-large-files
+        args: ['--maxkb=500']
+
+  # # Checkov (working version)
+  # - repo: https://github.com/bridgecrewio/checkov
+  #   rev: 3.2.15
+  #   hooks:
+  #     - id: checkov
+  #       args: [--framework=terraform]
+
+  # # TFLint as local hook (alternative approach)
+  # - repo: local
+  #   hooks:
+  #     - id: tflint
+  #       name: TFLint
+  #       entry: tflint
+  #       language: system
+  #       files: \.tf$
+  #       pass_filenames: false

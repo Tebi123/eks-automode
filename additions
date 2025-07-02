@@ -1,0 +1,20 @@
+# Add these to your .gitignore file
+
+# Pre-commit reports
+reports/
+*.sarif
+
+# TFLint cache
+.tflint.d/
+
+# Checkov cache
+.checkov/
+
+# Pre-commit cache
+.pre-commit-cache/
+
+# Terraform lock files (optional - some teams commit these)
+# .terraform.lock.hcl
+
+# Secrets baseline
+.secrets.baseline

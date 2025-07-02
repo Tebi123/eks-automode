@@ -35,3 +35,12 @@ terraform.rc
 # Ignore CLI configuration files
 .terraformrc
 terraform.rc
+
+echo "
+# Pre-commit reports
+reports/
+*.sarif
+.tflint.d/
+.checkov/
+.pre-commit-cache/
+.secrets.baseline" >> .gitignore

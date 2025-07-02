@@ -2,11 +2,11 @@ provider "kubernetes" {
   alias                  = "eks"
   host                   = module.eks.cluster_endpoint
   cluster_ca_certificate = base64decode(module.eks.cluster_certificate_authority_data)
-  
+
   exec {
     api_version = "client.authentication.k8s.io/v1beta1"
     command     = "aws"
-    args        = ["eks", "get-token", "--cluster-name", module.eks.cluster_name, "--profile", "terraform"]
+    args        = ["eks", "get-token", "--cluster-name", module.eks.cluster_name, ]
   }
 }
 
@@ -15,7 +15,7 @@ resource "null_resource" "wait_for_cluster" {
 
   provisioner "local-exec" {
     interpreter = ["PowerShell", "-Command"]
-    command     = "Start-Sleep -Seconds 45; aws eks wait cluster-active --name ${module.eks.cluster_name} --profile terraform"
+    command     = "Start-Sleep -Seconds 45; aws eks wait cluster-active --name ${module.eks.cluster_name}"
   }
 }
 
@@ -24,7 +24,7 @@ resource "null_resource" "kube_config" {
 
   provisioner "local-exec" {
     interpreter = ["PowerShell", "-Command"]
-    command     = "aws eks update-kubeconfig --name ${module.eks.cluster_name} --region ${var.region} --profile terraform"
+    command     = "aws eks update-kubeconfig --name ${module.eks.cluster_name} --region ${var.region}"
   }
 }
 

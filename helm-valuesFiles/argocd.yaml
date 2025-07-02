@@ -1,5 +1,5 @@
 global:
-  domain: "argocd.limanEKSlabs.com"
+  domain: "argocd.tebiekslabs.com"
 
 server:
   ingress:

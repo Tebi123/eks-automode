@@ -5,7 +5,7 @@
 apiVersion: v1
 kind: PersistentVolume
 metadata:
-  name: limanEKS-s3-pv
+  name: TebiEKS-s3-pv
 spec:
   capacity:
     storage: 100Gi
@@ -161,29 +161,29 @@ spec:
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: limanEKS-s3-pvc
-  namespace: limanEKS-api-staging 
+  name: TebiEKS-s3-pvc
+  namespace: TebiEKS-api-staging
 spec:
   accessModes:
     - ReadWriteMany
   storageClassName: ""
   resources:
     requests:
-      storage: 40Gi 
+      storage: 40Gi
   volumeName: limanEKS-s3-pv
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
   name: api-media-root-pvc-s3
-  namespace: limanEKS-api-staging 
+  namespace: limanEKS-api-staging
 spec:
   accessModes:
     - ReadWriteMany
   storageClassName: ""
   resources:
     requests:
-      storage: 40Gi 
+      storage: 40Gi
   volumeName: api-media-root-s3-pv
 ---
 apiVersion: v1
@@ -197,7 +197,7 @@ spec:
   storageClassName: ""
   resources:
     requests:
-      storage: 40Gi 
+      storage: 40Gi
   volumeName: models-pv
 ---
 apiVersion: v1
@@ -211,7 +211,7 @@ spec:
   storageClassName: ""
   resources:
     requests:
-      storage: 40Gi 
+      storage: 40Gi
   volumeName: model-output-pv
 ---
 apiVersion: v1
@@ -225,7 +225,7 @@ spec:
   storageClassName: ""
   resources:
     requests:
-      storage: 40Gi 
+      storage: 40Gi
   volumeName: model-output-pvc-assets
 ---
 apiVersion: v1
@@ -238,7 +238,7 @@ spec:
   storageClassName: ""
   resources:
     requests:
-      storage: 40Gi 
+      storage: 40Gi
   volumeName: img2img-images
 ---
 apiVersion: v1
@@ -251,7 +251,7 @@ spec:
   storageClassName: ""
   resources:
     requests:
-      storage: 40Gi 
+      storage: 40Gi
   volumeName: media-root
 ---
 apiVersion: v1
@@ -265,5 +265,5 @@ spec:
   storageClassName: ""
   resources:
     requests:
-      storage: 40Gi 
+      storage: 40Gi
   volumeName: api-outputs-s3-pv
