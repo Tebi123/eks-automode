@@ -44,6 +44,10 @@
 
 name: 'Terraform'
 
+env:
+  AWS_REGION: 'eu-west-2'  # Set the AWS region to use for Terraform operations
+  TF_VERSION: '1.3.2'       # Set the Terraform version to use
+
 on:
   push:
     branches: [ "dev" ]
