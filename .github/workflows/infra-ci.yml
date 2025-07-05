@@ -115,6 +115,7 @@ on:
       - '**.tf'
       - '**.tfvars'
       - 'helm-valuesFiles/**'
+      - '.github/workflows/**'
 
 permissions:
   contents: read
