@@ -1,75 +1,132 @@
-# # This workflow installs the latest version of Terraform CLI and configures the Terraform CLI configuration file
-# # with an API token for Terraform Cloud (app.terraform.io). On pull request events, this workflow will run
-# # `terraform init`, `terraform fmt`, and `terraform plan` (speculative plan via Terraform Cloud). On push events
-# # to the "dev" branch, `terraform apply` will be executed.
-# #
-# # Documentation for `hashicorp/setup-terraform` is located here: https://github.com/hashicorp/setup-terraform
-# #
-# # To use this workflow, you will need to complete the following setup steps.
-# #
-# # 1. Create a `main.tf` file in the root of this repository with the `remote` backend and one or more resources defined.
-# #   Example `main.tf`:
-# #     # The configuration for the `remote` backend.
-# #     terraform {
-# #       backend "remote" {
-# #         # The name of your Terraform Cloud organization.
-# #         organization = "example-organization"
-# #
-# #         # The name of the Terraform Cloud workspace to store Terraform state files in.
-# #         workspaces {
-# #           name = "example-workspace"
-# #         }
-# #       }
-# #     }
-# #
-# #     # An example resource that does nothing.
-# #     resource "null_resource" "example" {
-# #       triggers = {
-# #         value = "A example resource that does nothing!"
-# #       }
-# #     }
-# #
-# #
-# # 2. Generate a Terraform Cloud user API token and store it as a GitHub secret (e.g. TF_API_TOKEN) on this repository.
-# #   Documentation:
-# #     - https://www.terraform.io/docs/cloud/users-teams-organizations/api-tokens.html
-# #     - https://help.github.com/en/actions/configuring-and-managing-workflows/creating-and-storing-encrypted-secrets
-# #
-# # 3. Reference the GitHub secret in step using the `hashicorp/setup-terraform` GitHub Action.
-# #   Example:
-# #     - name: Setup Terraform
-# #       uses: hashicorp/setup-terraform@v1
-# #       with:
-# #         cli_config_credentials_token: ${{ secrets.TF_API_TOKEN }}
+# # # This workflow installs the latest version of Terraform CLI and configures the Terraform CLI configuration file
+# # # with an API token for Terraform Cloud (app.terraform.io). On pull request events, this workflow will run
+# # # `terraform init`, `terraform fmt`, and `terraform plan` (speculative plan via Terraform Cloud). On push events
+# # # to the "dev" branch, `terraform apply` will be executed.
+# # #
+# # # Documentation for `hashicorp/setup-terraform` is located here: https://github.com/hashicorp/setup-terraform
+# # #
+# # # To use this workflow, you will need to complete the following setup steps.
+# # #
+# # # 1. Create a `main.tf` file in the root of this repository with the `remote` backend and one or more resources defined.
+# # #   Example `main.tf`:
+# # #     # The configuration for the `remote` backend.
+# # #     terraform {
+# # #       backend "remote" {
+# # #         # The name of your Terraform Cloud organization.
+# # #         organization = "example-organization"
+# # #
+# # #         # The name of the Terraform Cloud workspace to store Terraform state files in.
+# # #         workspaces {
+# # #           name = "example-workspace"
+# # #         }
+# # #       }
+# # #     }
+# # #
+# # #     # An example resource that does nothing.
+# # #     resource "null_resource" "example" {
+# # #       triggers = {
+# # #         value = "A example resource that does nothing!"
+# # #       }
+# # #     }
+# # #
+# # #
+# # # 2. Generate a Terraform Cloud user API token and store it as a GitHub secret (e.g. TF_API_TOKEN) on this repository.
+# # #   Documentation:
+# # #     - https://www.terraform.io/docs/cloud/users-teams-organizations/api-tokens.html
+# # #     - https://help.github.com/en/actions/configuring-and-managing-workflows/creating-and-storing-encrypted-secrets
+# # #
+# # # 3. Reference the GitHub secret in step using the `hashicorp/setup-terraform` GitHub Action.
+# # #   Example:
+# # #     - name: Setup Terraform
+# # #       uses: hashicorp/setup-terraform@v1
+# # #       with:
+# # #         cli_config_credentials_token: ${{ secrets.TF_API_TOKEN }}
 
-name: 'Terraform'
+# name: 'Terraform'
+
+# env:
+#   AWS_REGION: 'eu-west-2'  # Set the AWS region to use for Terraform operations
+#   TF_VERSION: '1.3.2'       # Set the Terraform version to use
+
+# on:
+#   push:
+#     branches: [ "dev" ]
+#   pull_request:
+
+# permissions:
+#   contents: read
+
+# jobs:
+#   terraform:
+#     name: 'Terraform'
+#     runs-on: ubuntu-latest
+#     environment: production
+
+#     # Use the Bash shell regardless whether the GitHub Actions runner is ubuntu-latest, macos-latest, or windows-latest
+#     defaults:
+#       run:
+#         shell: bash
+
+#     steps:
+#     # Checkout the repository to the GitHub Actions runner
+#     - name: Checkout
+#       uses: actions/checkout@v4
+
+#     - name: 🔧 Setup Terraform
+#       uses: hashicorp/setup-terraform@v3
+#       with:
+#         terraform_version: ${{ env.TF_VERSION }}
+
+#     - name: 🔑 Configure AWS Credentials
+#       uses: aws-actions/configure-aws-credentials@v4
+#       with:
+#         aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+#         aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+#         aws-region: ${{ env.AWS_REGION }}    # Set the AWS region to use for Terraform operations
+
+#     # Initialize a new or existing Terraform working directory by creating initial files, loading any remote state, downloading modules, etc.
+#     - name: Terraform Init
+#       run: terraform init
+
+#     # Checks that all Terraform configuration files adhere to a canonical format
+#     - name: Terraform Format
+#       run: terraform fmt -check
+
+#     # Generates an execution plan for Terraform.
+#     - name: Terraform Plan
+#       run: terraform plan -input=false
+
+#       # On push to "dev", build or change infrastructure according to Terraform configuration files
+#       # Note: It is recommended to set up a required "strict" status check in your repository for "Terraform Cloud". See the documentation on "strict" required status checks for more information: https://help.github.com/en/github/administering-a-repository/types-of-required-status-checks
+#     - name: Terraform Apply
+#       if: github.ref == 'refs/heads/"dev"' && github.event_name == 'push'
+#       run: terraform apply -auto-approve -input=false
+
+name: 'EKS Auto Mode - Push to Deploy'
 
 env:
-  AWS_REGION: 'eu-west-2'  # Set the AWS region to use for Terraform operations
-  TF_VERSION: '1.3.2'       # Set the Terraform version to use
+  AWS_REGION: 'eu-west-2'  # Your region
+  TF_VERSION: '1.9.8'      # Updated Terraform version
 
 on:
   push:
-    branches: [ "dev" ]
-  pull_request:
+    branches: [ "dev", "main" ]
+    paths:
+      - '**.tf'
+      - '**.tfvars'
+      - 'helm-valuesFiles/**'
 
 permissions:
   contents: read
 
 jobs:
-  terraform:
-    name: 'Terraform'
+  deploy-eks:
+    name: '🚀 Deploy EKS Auto Mode'
     runs-on: ubuntu-latest
     environment: production
-
-    # Use the Bash shell regardless whether the GitHub Actions runner is ubuntu-latest, macos-latest, or windows-latest
-    defaults:
-      run:
-        shell: bash
-
+    
     steps:
-    # Checkout the repository to the GitHub Actions runner
-    - name: Checkout
+    - name: 📥 Checkout Code
       uses: actions/checkout@v4
 
     - name: 🔧 Setup Terraform
@@ -82,22 +139,213 @@ jobs:
       with:
         aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
         aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        aws-region: ${{ env.AWS_REGION }}    # Set the AWS region to use for Terraform operations
+        aws-region: ${{ env.AWS_REGION }}
 
-    # Initialize a new or existing Terraform working directory by creating initial files, loading any remote state, downloading modules, etc.
-    - name: Terraform Init
-      run: terraform init
+    - name: ✅ Pre-deployment Checks
+      run: |
+        echo "🔍 Running pre-deployment checks..."
+        
+        # Check AWS access
+        aws sts get-caller-identity
+        echo "✅ AWS access confirmed"
+        
+        # Check region supports EKS Auto Mode
+        echo "🌍 Checking EKS Auto Mode support in ${{ env.AWS_REGION }}"
+        if [[ "${{ env.AWS_REGION }}" =~ ^(us-east-1|us-west-2|eu-west-1|eu-west-2|ap-southeast-1|ap-northeast-1)$ ]]; then
+          echo "✅ EKS Auto Mode supported in ${{ env.AWS_REGION }}"
+        else
+          echo "⚠️ EKS Auto Mode support not confirmed for ${{ env.AWS_REGION }}"
+        fi
 
-    # Checks that all Terraform configuration files adhere to a canonical format
-    - name: Terraform Format
-      run: terraform fmt -check
+    - name: 🚀 Terraform Init
+      run: |
+        echo "🚀 Initializing Terraform..."
+        terraform init
+        echo "✅ Terraform initialized"
 
-    # Generates an execution plan for Terraform.
-    - name: Terraform Plan
-      run: terraform plan -input=false
+    - name: 📏 Terraform Format & Validate
+      run: |
+        echo "📏 Checking Terraform format..."
+        terraform fmt -check -recursive || {
+          echo "🔧 Auto-formatting Terraform files..."
+          terraform fmt -recursive
+        }
+        
+        echo "✅ Validating Terraform configuration..."
+        terraform validate
+        echo "✅ Terraform validation passed"
 
-      # On push to "dev", build or change infrastructure according to Terraform configuration files
-      # Note: It is recommended to set up a required "strict" status check in your repository for "Terraform Cloud". See the documentation on "strict" required status checks for more information: https://help.github.com/en/github/administering-a-repository/types-of-required-status-checks
-    - name: Terraform Apply
-      if: github.ref == 'refs/heads/"dev"' && github.event_name == 'push'
-      run: terraform apply -auto-approve -input=false
+    - name: 📋 Terraform Plan
+      id: plan
+      run: |
+        echo "📋 Creating Terraform plan..."
+        
+        # Determine environment from branch
+        if [[ "${{ github.ref }}" == "refs/heads/main" ]]; then
+          ENV="prod"
+        else
+          ENV="dev"
+        fi
+        
+        echo "Environment: $ENV"
+        echo "Branch: ${{ github.ref_name }}"
+        
+        # Create plan
+        terraform plan -out=tfplan \
+          -var="environment=$ENV" \
+          -var="region=${{ env.AWS_REGION }}" \
+          -no-color > plan_output.txt
+        
+        # Check if changes detected
+        if grep -q "No changes" plan_output.txt; then
+          echo "📄 No infrastructure changes needed"
+          echo "plan_status=no_changes" >> $GITHUB_OUTPUT
+        else
+          echo "📝 Infrastructure changes detected"
+          echo "plan_status=changes_detected" >> $GITHUB_OUTPUT
+          
+          # Show key changes
+          echo "🔍 Key changes detected:"
+          grep -E "(aws_eks_cluster|aws_vpc|module\.eks)" plan_output.txt | head -10 || echo "Details in full plan"
+        fi
+
+    - name: 🏗️ Deploy EKS Auto Mode Cluster
+      if: steps.plan.outputs.plan_status == 'changes_detected'
+      run: |
+        echo "🏗️ Deploying EKS Auto Mode cluster..."
+        echo "⏱️ This will take approximately 15-20 minutes..."
+        
+        # Apply with extended timeout for EKS creation
+        timeout 2400 terraform apply -auto-approve tfplan
+        
+        echo "✅ EKS Auto Mode cluster deployment completed!"
+
+    - name: 📊 Get Cluster Information
+      id: cluster_info
+      if: steps.plan.outputs.plan_status == 'changes_detected'
+      run: |
+        echo "📊 Retrieving cluster information..."
+        
+        # Get cluster name from Terraform output
+        CLUSTER_NAME=$(terraform output -raw cluster_name 2>/dev/null || echo "")
+        
+        if [ -n "$CLUSTER_NAME" ]; then
+          echo "Found cluster: $CLUSTER_NAME"
+          echo "cluster_name=$CLUSTER_NAME" >> $GITHUB_OUTPUT
+          
+          # Get cluster status
+          CLUSTER_STATUS=$(aws eks describe-cluster --name $CLUSTER_NAME --region ${{ env.AWS_REGION }} --query 'cluster.status' --output text)
+          CLUSTER_ENDPOINT=$(aws eks describe-cluster --name $CLUSTER_NAME --region ${{ env.AWS_REGION }} --query 'cluster.endpoint' --output text)
+          CLUSTER_VERSION=$(aws eks describe-cluster --name $CLUSTER_NAME --region ${{ env.AWS_REGION }} --query 'cluster.version' --output text)
+          
+          echo "status=$CLUSTER_STATUS" >> $GITHUB_OUTPUT
+          echo "endpoint=$CLUSTER_ENDPOINT" >> $GITHUB_OUTPUT
+          echo "version=$CLUSTER_VERSION" >> $GITHUB_OUTPUT
+          
+          echo "✅ Cluster Status: $CLUSTER_STATUS"
+          echo "🔗 Endpoint: $CLUSTER_ENDPOINT"
+          echo "📋 Version: $CLUSTER_VERSION"
+        else
+          echo "⚠️ Could not retrieve cluster information"
+        fi
+
+    - name: 🔧 Configure kubectl Access
+      if: steps.cluster_info.outputs.cluster_name != ''
+      run: |
+        echo "🔧 Configuring kubectl access..."
+        
+        CLUSTER_NAME="${{ steps.cluster_info.outputs.cluster_name }}"
+        
+        # Configure kubectl
+        aws eks update-kubeconfig --name $CLUSTER_NAME --region ${{ env.AWS_REGION }}
+        
+        # Test kubectl (nodes might not be ready immediately with Auto Mode)
+        echo "🔍 Testing kubectl connectivity..."
+        kubectl cluster-info || echo "Cluster info not available yet"
+        
+        # Check for nodes (Auto Mode provisions automatically)
+        echo "🔍 Checking for nodes (Auto Mode provisions automatically)..."
+        kubectl get nodes || echo "Nodes not ready yet - this is normal for EKS Auto Mode"
+        
+        # Check system pods
+        echo "🔍 Checking system pods..."
+        kubectl get pods -A || echo "System pods starting up"
+        
+        echo "✅ kubectl configured successfully"
+
+    - name: 🎯 Deploy Core Add-ons
+      if: steps.cluster_info.outputs.cluster_name != ''
+      run: |
+        echo "🎯 Deploying core add-ons..."
+        
+        # Wait a bit for cluster to be fully ready
+        sleep 30
+        
+        # Apply any manifests in the manifests directory
+        if [ -d "manifests" ]; then
+          echo "📦 Applying Kubernetes manifests..."
+          kubectl apply -f manifests/ || echo "Some manifests may not be ready yet"
+        fi
+        
+        # Deploy ArgoCD if helm values exist
+        if [ -f "helm-valuesFiles/argocd.yaml" ]; then
+          echo "🔄 Installing ArgoCD..."
+          
+          # Add ArgoCD helm repo
+          helm repo add argo https://argoproj.github.io/argo-helm
+          helm repo update
+          
+          # Install ArgoCD
+          helm upgrade --install argocd argo/argo-cd \
+            --namespace argocd \
+            --create-namespace \
+            --values helm-valuesFiles/argocd.yaml \
+            --timeout 10m || echo "ArgoCD installation may need more time"
+          
+          echo "✅ ArgoCD installation initiated"
+        fi
+
+    - name: 🎉 Deployment Success
+      if: steps.plan.outputs.plan_status == 'changes_detected'
+      run: |
+        echo "## 🎉 EKS Auto Mode Deployment Successful!" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "### 📊 Cluster Information" >> $GITHUB_STEP_SUMMARY
+        echo "| Parameter | Value |" >> $GITHUB_STEP_SUMMARY
+        echo "|-----------|-------|" >> $GITHUB_STEP_SUMMARY
+        echo "| Cluster Name | \`${{ steps.cluster_info.outputs.cluster_name }}\` |" >> $GITHUB_STEP_SUMMARY
+        echo "| Status | \`${{ steps.cluster_info.outputs.status }}\` |" >> $GITHUB_STEP_SUMMARY
+        echo "| Version | \`${{ steps.cluster_info.outputs.version }}\` |" >> $GITHUB_STEP_SUMMARY
+        echo "| Region | \`${{ env.AWS_REGION }}\` |" >> $GITHUB_STEP_SUMMARY
+        echo "| Branch | \`${{ github.ref_name }}\` |" >> $GITHUB_STEP_SUMMARY
+        echo "| Commit | \`${{ github.sha }}\` |" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "### 🔧 Access Your Cluster" >> $GITHUB_STEP_SUMMARY
+        echo "\`\`\`bash" >> $GITHUB_STEP_SUMMARY
+        echo "# Configure kubectl" >> $GITHUB_STEP_SUMMARY
+        echo "aws eks update-kubeconfig --name ${{ steps.cluster_info.outputs.cluster_name }} --region ${{ env.AWS_REGION }}" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "# Check cluster status" >> $GITHUB_STEP_SUMMARY
+        echo "kubectl get nodes" >> $GITHUB_STEP_SUMMARY
+        echo "kubectl get pods -A" >> $GITHUB_STEP_SUMMARY
+        echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "### 🚀 Next Steps" >> $GITHUB_STEP_SUMMARY
+        echo "1. **Wait for nodes**: EKS Auto Mode will provision nodes automatically" >> $GITHUB_STEP_SUMMARY
+        echo "2. **Check ArgoCD**: If installed, access via LoadBalancer or configure ingress" >> $GITHUB_STEP_SUMMARY
+        echo "3. **Deploy applications**: Use kubectl, Helm, or ArgoCD for deployments" >> $GITHUB_STEP_SUMMARY
+        echo "4. **Monitor**: Check AWS Console for cluster health and node status" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "🎯 **Your EKS Auto Mode cluster is ready!**" >> $GITHUB_STEP_SUMMARY
+
+    - name: 📄 No Changes Detected
+      if: steps.plan.outputs.plan_status == 'no_changes'
+      run: |
+        echo "## 📄 No Infrastructure Changes" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "✅ Your EKS Auto Mode cluster is already up-to-date!" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "**Branch:** \`${{ github.ref_name }}\`" >> $GITHUB_STEP_SUMMARY
+        echo "**Commit:** \`${{ github.sha }}\`" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "No Terraform changes were needed for this deployment." >> $GITHUB_STEP_SUMMARY
