@@ -11,7 +11,7 @@ variable "name" {
 }
 
 variable "region" {
-  description = "region"
+  description = " AWS region"
   default     = "eu-west-2"
   type        = string
 }
@@ -34,4 +34,10 @@ variable "mountpoint_s3_csi_path_arns" {
   default = [
     "arn:aws:s3:::kuberntes-TebiEKS-data"
   ]
+}
+
+variable "environment" {
+  description = "Development environment"
+  type        = string
+  default     = "dev"
 }

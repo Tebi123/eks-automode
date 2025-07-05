@@ -28,3 +28,14 @@
 #     region  = "eu-west-2"
 #   }
 # }
+
+# # main.tf or backend.tf
+# terraform {
+#   backend "s3" {
+#     bucket         = "omotebi-terraform-state"
+#     key            = "eks-auto-mode/terraform.tfstate"
+#     region         = "eu-west-2"
+#     dynamodb_table = "terraform-lock"
+#     encrypt        = true
+#   }
+# }
