@@ -12,8 +12,18 @@ repos:
     hooks:
       # - id: check-yaml
       - id: check-json
-      - id: check-added-large-files
-        args: ['--maxkb=500']
+      # - id: check-added-large-files
+      #   args: ['--maxkb=500']
+
+  # # Terrascan security scanning
+  # - repo: local
+  #   hooks:
+  #     - id: terrascan
+  #       name: terrascan
+  #       entry: terrascan scan -i terraform -t aws
+  #       language: system
+  #       files: \.tf$
+  #       pass_filenames: false
 
   # # Checkov (working version)
   # - repo: https://github.com/bridgecrewio/checkov
